@@ -23,6 +23,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get -y --no-install-recommends install \
 
 
 # setup Apache
+COPY apache2-foreground /usr/local/bin/
 COPY www/ /var/www/html/
 RUN mv /var/www/html/index.html /var/www/html/apache2.html
 RUN a2enmod php7.0
@@ -38,4 +39,4 @@ RUN echo "xdebug.remote_enable=1" >> /etc/php/7.0/apache2/conf.d/20-xdebug.ini
 
 # start things
 EXPOSE 80
-CMD apache2ctl -D FOREGROUND
+CMD ["apache2-foreground"]
