@@ -7,7 +7,6 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get -y --no-install-recommends install \
 RUN LC_ALL=C.UTF-8 add-apt-repository -y --update ppa:ondrej/php
 RUN DEBIAN_FRONTEND=noninteractive apt-get -y --no-install-recommends install \
 	apache2 \
-	openssh-server \
 	libapache2-mod-php7.0 \
 	php-xdebug \
 	php7.0-curl \
@@ -21,16 +20,6 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get -y --no-install-recommends install \
 	php7.0-pdo-mysql \
 	php7.0-pdo-pgsql \
 	php7.0-pdo-sqlite
-
-WORKDIR /root
-
-
-# setup SSH
-RUN sed -i -e 's~#PasswordAuthentication yes~PasswordAuthentication no~' /etc/ssh/sshd_config
-RUN sed -i -e 's~PermitRootLogin prohibit-password~PermitRootLogin without-password~' /etc/ssh/sshd_config
-RUN mkdir .ssh
-RUN chmod 700 .ssh
-ADD authorized_keys .ssh/authorized_keys
 
 
 # setup Apache
@@ -48,7 +37,5 @@ RUN echo "xdebug.remote_enable=1" >> /etc/php/7.0/apache2/conf.d/20-xdebug.ini
 
 
 # start things
-EXPOSE 22
 EXPOSE 80
-ADD start.sh .
-CMD ./start.sh
+CMD apache2ctl -D FOREGROUND
