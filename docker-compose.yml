@@ -1,0 +1,11 @@
+version: '2.0'
+services:
+  php:
+    build: .
+    image: srigi/php:latest
+    environment:
+      XDEBUG_CONFIG: "remote_host=10.100.100.1"
+    ports:
+      - "8080:80"
+    volumes:
+      - ./www:/var/www/html
