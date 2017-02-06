@@ -25,15 +25,19 @@ RUN DEBIAN_FRONTEND=noninteractive LC_ALL=C.UTF-8 \
 
 # setup Apache
 COPY apache2-foreground /usr/local/bin/
+COPY vhost.conf etc/apache2/sites-available/
+COPY nette/ /var/www/nette/
+RUN chmod g+w /var/www/nette/log /var/www/nette/temp && \
+    chown www-data:www-data /var/www/nette/log /var/www/nette/temp
 COPY www/ /var/www/html/
 RUN mv /var/www/html/index.html /var/www/html/apache2.html && \
 	a2enmod php7.0 && \
 	a2enmod rewrite && \
-	sed -i -e ':a;N;$!ba;s#\(/var/www/>\n\tOptions Indexes FollowSymLinks\n\tAllowOverride\) None#\1 All#g' /etc/apache2/apache2.conf
+	sed -i -e ':a;N;$!ba;s#\(/var/www/>\n\tOptions Indexes FollowSymLinks\n\tAllowOverride\) None#\1 All#g' /etc/apache2/apache2.conf && \
+	a2ensite vhost
 
 # setup debugger
-RUN phpdismod -s cli xdebug && \
-	echo "xdebug.remote_enable=1" >> /etc/php/7.0/apache2/conf.d/20-xdebug.ini
+RUN echo "xdebug.remote_enable=1" >> /etc/php/7.0/apache2/conf.d/20-xdebug.ini
 
 # start things
 EXPOSE 80

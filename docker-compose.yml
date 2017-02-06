@@ -5,7 +5,14 @@ services:
     image: srigi/php:latest
     environment:
       XDEBUG_CONFIG: "remote_host=10.100.100.1"
+      DEBUG: 'true'
     ports:
       - "8080:80"
     volumes:
       - ./www:/var/www/html
+      - ./nette:/var/www/nette
+  db:
+    image: postgres:9.4-alpine
+    environment:
+      POSTGRES_USER: "nette"
+      POSTGRES_PASSWORD: "password"
